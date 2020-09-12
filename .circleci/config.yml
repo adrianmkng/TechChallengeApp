@@ -2,6 +2,8 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
+orbs:
+  aws-cloudformation: orbss/aws-cloudformation@0.1.6
 jobs:
   build:
     working_directory: /go/src/github.com/servian/TechChallengeApp
@@ -23,6 +25,9 @@ jobs:
 
     steps:
       - checkout
+      - aws-cloudformation/deploy:
+          stack-name: techchallenge-setup
+          template-file-path: /go/src/github.com/servian/TechChallengeApp/techchallenge-cf.json
 
       - run:
           name: Setup
