@@ -1,8 +1,13 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "ECR repository for tech challenge app",
+  "Description": "S3 repository for tech challenge build artifacts",
 
   "Parameters": {
+    "BuildBucket": {
+      "Type": "String",
+      "Description": "Bucket name for build artifacts"
+    },
+
     "DBUser": {
       "NoEcho": "true",
       "Type": "String",
@@ -22,34 +27,15 @@
 
   "Resources": {
     "techChallengeRepo" : {
-      "Type" : "AWS::ECR::Repository",
+      "Type" : "AWS::S3::Bucket",
       "Properties" : {
-        "ImageTagMutability" : "MUTABLE",
-        "RepositoryName" : "techchallengeapp",
-        "RepositoryPolicyText" : {
-          "Version": "2008-10-17",
-          "Statement": [
-            {
-              "Sid": "AllowPushPull",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": [
-                  { "Fn::Join" : [":", ["arn:aws:iam:", { "Ref" : "AWS::AccountId" }, "root"]] }
-                ]
-              },
-              "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:PutImage",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload"
-              ]
-            }
-          ]
+        "BucketName": { "Ref": "BuildBucket" },
+        "PublicAccessBlockConfiguration" : {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
         },
-
         "Tags" : [ 
           {
             "Key": "Org",
@@ -62,6 +48,7 @@
         ]
       }
     },
+
     "postgresRDS": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
@@ -75,12 +62,10 @@
     }
   },
 
-
-
   "Outputs": {
-    "ECR" : {
-      "Description": "Uri",
-      "Value": { "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/techchallengeapp" }
+    "BucketUrl" : {
+      "Description": "URL of build bucket",
+      "Value": { "Fn::GetAtt": ["techChallengeRepo", "WebsiteURL"]}
     },
     "DBUrl" : {
       "Description": "RDS connection string",
