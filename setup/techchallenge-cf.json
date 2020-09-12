@@ -1,0 +1,95 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "ECR repository for tech challenge app",
+
+  "Parameters": {
+    "DBUser": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database master username",
+      "MinLength": "1",
+      "MaxLength": "16"
+    },
+
+    "DBPassword": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database master password",
+      "MinLength": "8",
+      "MaxLength": "41"
+    }
+  },
+
+  "Resources": {
+    "techChallengeRepo" : {
+      "Type" : "AWS::ECR::Repository",
+      "Properties" : {
+        "ImageTagMutability" : "MUTABLE",
+        "RepositoryName" : "techchallengeapp",
+        "RepositoryPolicyText" : {
+          "Version": "2008-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowPushPull",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [
+                  { "Fn::Join" : [":", ["arn:aws:iam:", { "Ref" : "AWS::AccountId" }, "root"]] }
+                ]
+              },
+              "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload"
+              ]
+            }
+          ]
+        },
+
+        "Tags" : [ 
+          {
+            "Key": "Org",
+            "Value": "Servian"
+          },
+          {
+            "Key": "Candidate",
+            "Value": "Adrian Ng"
+          }
+        ]
+      }
+    },
+    "postgresRDS": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "Engine": "postgres",
+        "DBName": "app",
+        "MasterUsername": { "Ref": "DBUser" },
+        "DBInstanceClass": "db.t2.small",
+        "AllocatedStorage": "5",
+        "MasterUserPassword": { "Ref": "DBPassword" }
+      }
+    }
+  },
+
+
+
+  "Outputs": {
+    "ECR" : {
+      "Description": "Uri",
+      "Value": { "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/techchallengeapp" }
+    },
+    "DBUrl" : {
+      "Description": "RDS connection string",
+      "Value": { "Fn::GetAtt": ["postgresRDS" , "Endpoint.Address"]}
+    },
+    "DBPort" : {
+      "Description": "RDS port",
+      "Value": { "Fn::GetAtt": ["postgresRDS" , "Endpoint.Port"]}
+    }
+  }
+}
+
