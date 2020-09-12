@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.1
 orbs:
-  aws-cloudformation: orbss/aws-cloudformation@0.1.6
+  aws-cli: circleci/aws-cli@1.3.0
 jobs:
   build:
     working_directory: /go/src/github.com/servian/TechChallengeApp
@@ -25,9 +25,7 @@ jobs:
 
     steps:
       - checkout
-      - aws-cloudformation/deploy:
-          stack-name: techchallenge-setup
-          template-file-path: /go/src/github.com/servian/TechChallengeApp/techchallenge-cf.json
+      - aws-cli/setup
 
       - run:
           name: Setup
@@ -38,6 +36,10 @@ jobs:
             ls
             ./TechChallengeApp --version | sed -e 's/TechChallengeApp version /v./' > versionfile
 
+      - run:
+          name: Setup AWS
+          command: |
+            aws cloudformation deploy --stack-name techchallenge-setup --template-file setup/techchallenge-cf.json --parameter-overrides ParameterKey="DBUser",ParameterValue="${DB_USER}" ParameterKey="DBPassword",ParameterValue="${DB_PASSWORD}"
 
       - run: 
           name: Build for linux
