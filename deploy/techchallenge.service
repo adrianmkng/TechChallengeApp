@@ -1,0 +1,8 @@
+[Unit]
+Description=TechChallengeApp
+
+[Service]
+ExecStart=/app/dist/TechChallengeApp serve
+
+[Install]
+WantedBy=multi-user.target

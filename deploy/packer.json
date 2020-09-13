@@ -28,13 +28,27 @@
   ],
   "provisioners": [
     {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir /app",
+        "sudo chown ec2-user:ec2-user /app"
+      ]
+    },
+    {
       "type": "file",
       "source": "output/{{ user `app_file` }}",
-      "destination": "/home/ec2-user/techchallenge.zip"
+      "destination": "/app/techchallenge.zip"
+    },
+    {
+      "type": "file",
+      "source": "deploy/techchallenge.service",
+      "destination": "/app/techchallenge.service"
     },
     {
       "type": "shell",
       "inline": [
+        "cd /app",
+        "sudo mv techchallenge.service /etc/systemd/system/",
         "tar -zxf techchallenge.zip"
       ]
     }

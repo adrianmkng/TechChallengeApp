@@ -59,11 +59,8 @@
         "AllocatedStorage": "5",
         "MasterUserPassword": { "Ref": "DBPassword" }
       }
-    },
-
-    "appASG": {
-
     }
+
   },
 
   "Outputs": {
