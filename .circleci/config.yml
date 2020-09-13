@@ -72,12 +72,13 @@ jobs:
               -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} \
               -var aws_region=${AWS_DEFAULT_REGION} \
               -var version=${version} \
-              setup/packer.json
+              deploy/packer.json
       
       - run:
           name: Deploy AWS
           command: |
-            aws cloudformation update-stack --stack-name techchallenge-setup --template-body file://setup/techchallenge-cf.json --parameters ParameterKey="BuildBucket",ParameterValue="${BUILD_BUCKET}" ParameterKey="DBUser",ParameterValue="${DB_USER}" ParameterKey="DBPassword",ParameterValue="${DB_PASSWORD}"
+            cd deploy
+            ./deploy.sh
 
 
       # build for macos
