@@ -3,11 +3,6 @@
   "Description": "S3 repository for tech challenge build artifacts",
 
   "Parameters": {
-    "BuildBucket": {
-      "Type": "String",
-      "Description": "Bucket name for build artifacts"
-    },
-
     "DBUser": {
       "NoEcho": "true",
       "Type": "String",
@@ -22,33 +17,14 @@
       "Description": "Database master password",
       "MinLength": "8",
       "MaxLength": "41"
+    },
+    "AmiId" : {
+      "Type": "String",
+      "Description": "AMI id for launch template"
     }
   },
 
   "Resources": {
-    "techChallengeRepo" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName": { "Ref": "BuildBucket" },
-        "PublicAccessBlockConfiguration" : {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        },
-        "Tags" : [ 
-          {
-            "Key": "Org",
-            "Value": "Servian"
-          },
-          {
-            "Key": "Candidate",
-            "Value": "Adrian Ng"
-          }
-        ]
-      }
-    },
-
     "postgresRDS": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
@@ -59,15 +35,42 @@
         "AllocatedStorage": "5",
         "MasterUserPassword": { "Ref": "DBPassword" }
       }
-    }
+    },
+    "techChallengeLaunchConfiguration":{
+      "Type":"AWS::AutoScaling::LaunchConfiguration",
+      "Properties":{
+        "LaunchConfigurationName" : "techChallengeLaunchConfig",
+        "ImageId":{ "Ref":"AmiId" },
+        "InstanceType":"t2.micro",
+        "UserData" : {
+          "Fn::Base64": {
+            "Fn::Join": ["", [
+              "#!/usr/bin/env bash\n",
 
+              "cat > /etc/profile.d/load_env.sh << 'EOF'\n",
+              "export VTT_DbHost=${ \"Fn::GetAtt\": [\"postgresRDS\" , \"Endpoint.Address\"]}\n",
+              "export VTT_DbPort=${ \"Fn::GetAtt\": [\"postgresRDS\" , \"Endpoint.Port\"]}\n",
+              "EOF"]
+            ]
+          }
+        }
+      }
+    },
+
+    "techChallengeASG": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AutoScalingGroupName" : "techchallenge-asg",
+        "AvailabilityZones" : ["a","b","c"],
+        "DesiredCapacity" : "1",
+        "MinSize" : "1",
+        "MaxSize" : "3",
+        "LaunchConfigurationName" : "techChallengeLaunchConfig"
+        }
+      }
   },
 
   "Outputs": {
-    "BucketUrl" : {
-      "Description": "URL of build bucket",
-      "Value": { "Fn::GetAtt": ["techChallengeRepo", "WebsiteURL"]}
-    },
     "DBUrl" : {
       "Description": "RDS connection string",
       "Value": { "Fn::GetAtt": ["postgresRDS" , "Endpoint.Address"]}

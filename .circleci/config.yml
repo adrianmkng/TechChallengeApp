@@ -60,26 +60,27 @@ jobs:
 
             tar -czf "output/TechChallengeApp_${version}_linux64.tgz" dist/*
 
-      - run:
-          name: Bake AMI
-          command: |
-            export version=$(cat versionfile)
-            curl -o packer.zip https://releases.hashicorp.com/packer/1.6.2/packer_1.6.2_linux_amd64.zip
-            unzip packer.zip
-            ./packer build \
-              -var app_file="TechChallengeApp_${version}_linux64.tgz" \
-              -var aws_access_key=${AWS_ACCESS_KEY_ID} \
-              -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} \
-              -var aws_region=${AWS_DEFAULT_REGION} \
-              -var version=${version} \
-              deploy/packer.json
+#      - run:
+#          name: Bake AMI
+#          command: |
+#            export version=$(cat versionfile)
+#            curl -o packer.zip https://releases.hashicorp.com/packer/1.6.2/packer_1.6.2_linux_amd64.zip
+#            unzip packer.zip
+#            ./packer build \
+#              -var app_file="TechChallengeApp_${version}_linux64.tgz" \
+#              -var aws_access_key=${AWS_ACCESS_KEY_ID} \
+#              -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} \
+#              -var aws_region=${AWS_DEFAULT_REGION} \
+#              -var version=${version} \
+#              deploy/packer.json
       
       - run:
-          name: Deploy AWS
+          name: Deploy to AWS
           command: |
+            export account_id=$(aws sts get-caller-identity --query Account --output text)
+            export latest_ami=$(aws ec2 describe-images --owners ${account_id} --query 'sort_by(Images, &CreationDate)[].ImageId' --output text)
             cd deploy
-            ./deploy.sh
-
+            ./deploy.sh $latest_ami
 
       # build for macos
       - run: 
