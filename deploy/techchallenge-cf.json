@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "S3 repository for tech challenge build artifacts",
+  "Description": "Deploy tech challenge app.",
 
   "Parameters": {
     "DBUser": {
@@ -61,7 +61,7 @@
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
         "AutoScalingGroupName" : "techchallenge-asg",
-        "AvailabilityZones" : ["a","b","c"],
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
         "DesiredCapacity" : "1",
         "MinSize" : "1",
         "MaxSize" : "3",
