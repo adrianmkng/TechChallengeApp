@@ -50,7 +50,9 @@
               "cat > /etc/profile.d/load_env.sh << 'EOF'\n",
               "export VTT_DbHost=${ \"Fn::GetAtt\": [\"postgresRDS\" , \"Endpoint.Address\"]}\n",
               "export VTT_DbPort=${ \"Fn::GetAtt\": [\"postgresRDS\" , \"Endpoint.Port\"]}\n",
-              "EOF"]
+              "EOF\n",
+              "systemctl enable techchallenge\n",
+              "systemctl start techchallenge\n"]
             ]
           }
         }

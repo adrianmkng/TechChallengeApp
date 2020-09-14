@@ -3,6 +3,7 @@ Description=TechChallengeApp
 
 [Service]
 ExecStart=/app/dist/TechChallengeApp serve
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
