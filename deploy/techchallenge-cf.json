@@ -39,7 +39,7 @@
     "techChallengeLaunchConfiguration":{
       "Type":"AWS::AutoScaling::LaunchConfiguration",
       "Properties":{
-        "LaunchConfigurationName" : "techChallengeLaunchConfig",
+        "LaunchConfigurationName" : "techChallengeLaunchConfiguration",
         "ImageId":{ "Ref":"AmiId" },
         "InstanceType":"t2.micro",
         "UserData" : {
@@ -65,7 +65,7 @@
         "DesiredCapacity" : "1",
         "MinSize" : "1",
         "MaxSize" : "3",
-        "LaunchConfigurationName" : "techChallengeLaunchConfig"
+        "LaunchConfigurationName" : "techChallengeLaunchConfiguration"
         }
       }
   },
