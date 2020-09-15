@@ -29,6 +29,7 @@
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
         "Engine": "postgres",
+        "EngineVersion" : "10.7",
         "DBName": "app",
         "MasterUsername": { "Ref": "DBUser" },
         "DBInstanceClass": "db.t2.small",
