@@ -2,6 +2,7 @@
 Description=TechChallengeApp
 
 [Service]
+WorkingDirectory=/app/dist
 ExecStart=/app/dist/TechChallengeApp serve
 Restart=always
 
