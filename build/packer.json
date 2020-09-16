@@ -41,7 +41,7 @@
     },
     {
       "type": "file",
-      "source": "deploy/techchallenge.service",
+      "source": "build/techchallenge.service",
       "destination": "/app/techchallenge.service"
     },
     {

@@ -72,7 +72,7 @@ jobs:
               -var aws_secret_key=${AWS_SECRET_ACCESS_KEY} \
               -var aws_region=${AWS_DEFAULT_REGION} \
               -var version=${version} \
-              deploy/packer.json
+              build/packer.json
       
       - run:
           name: Deploy to AWS
