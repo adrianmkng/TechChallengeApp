@@ -22,3 +22,6 @@ dist/
 
 # Output Binary
 TechChallengeApp
+
+# Terraform local state
+.terraform/
