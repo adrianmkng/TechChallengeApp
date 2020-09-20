@@ -4,16 +4,16 @@ resource "aws_db_subnet_group" "private" {
 }
 
 resource "aws_db_instance" "postgres" {
-  allocated_storage    = 5
-  storage_type         = "gp2"
-  engine               = "postgres"
-  engine_version       = "10.7"
-  instance_class       = "db.t2.micro"
-  name                 = var.name
-  username             = var.db_username
-  password             = var.db_password
-  db_subnet_group_name = aws_db_subnet_group.private.name
-  skip_final_snapshot  = true
+  allocated_storage      = 5
+  storage_type           = "gp2"
+  engine                 = "postgres"
+  engine_version         = "10.7"
+  instance_class         = "db.t2.micro"
+  name                   = var.name
+  username               = var.db_username
+  password               = var.db_password
+  db_subnet_group_name   = aws_db_subnet_group.private.name
+  skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.allow_rds_access.id]
 }
 

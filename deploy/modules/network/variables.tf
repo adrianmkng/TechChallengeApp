@@ -7,7 +7,7 @@ variable "vpc_cidr" {
 }
 
 variable "zones" {
-  type = list(string)
+  type    = list(string)
   default = ["a"]
 }
 

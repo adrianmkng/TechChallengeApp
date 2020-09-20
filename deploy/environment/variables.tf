@@ -1,29 +1,29 @@
 variable "name" {
-  type = string
+  type    = string
   default = "techchallenge"
 }
 
 variable "vpc_cidr" {
-  type = string
+  type    = string
   default = "192.168.0.0/24"
 }
 
 variable "app_version" {
-  type = string
+  type    = string
   default = "v.0.7.0"
 }
 
 variable "db_name" {
-  type = string
+  type    = string
   default = "app"
 }
 
 variable "db_username" {
-  type = string
+  type    = string
   default = "postgres"
 }
 
 variable "db_password" {
-  type = string
+  type    = string
   default = "changeme"
 }

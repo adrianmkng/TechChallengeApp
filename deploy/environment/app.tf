@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ssm_instance_role" {
-  name = "ssm_instance_role"
+  name               = "ssm_instance_role"
   assume_role_policy = <<TRUSTPOLICY
 {
   "Version": "2012-10-17",
@@ -17,7 +17,7 @@ TRUSTPOLICY
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_attachment" {
-  role = aws_iam_role.ssm_instance_role.name
+  role       = aws_iam_role.ssm_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
@@ -27,46 +27,46 @@ resource "aws_iam_instance_profile" "ssm_instance_profile" {
 }
 
 resource "aws_autoscaling_group" "techchallenge" {
-  name                      = var.name
-  max_size                  = 3
-  min_size                  = 1
-  desired_capacity          = 1
-  load_balancers            = [aws_elb.techchallenge.name]
-  launch_template      {
-    id = aws_launch_template.techchallenge.id
+  name             = var.name
+  max_size         = 3
+  min_size         = 1
+  desired_capacity = 1
+  load_balancers   = [aws_elb.techchallenge.name]
+  launch_template {
+    id      = aws_launch_template.techchallenge.id
     version = "$Latest"
   }
-  vpc_zone_identifier       = module.network.private_subnets.*.id
+  vpc_zone_identifier = module.network.private_subnets.*.id
 }
 
 data "aws_ami" "latest_amazonlinux2" {
   most_recent = true
-  owners = ["137112412989"] # Amazon
+  owners      = ["137112412989"] # Amazon
 
   filter {
-      name   = "name"
-      values = ["amzn2-ami-hvm-*"]
+    name   = "name"
+    values = ["amzn2-ami-hvm-*"]
   }
 
   filter {
-    name = "architecture"
+    name   = "architecture"
     values = ["x86_64"]
   }
 
   filter {
-      name   = "virtualization-type"
-      values = ["hvm"]
+    name   = "virtualization-type"
+    values = ["hvm"]
   }
 }
 
 resource "aws_launch_template" "techchallenge" {
-  name = var.name
-  image_id = data.aws_ami.latest_amazonlinux2.id
+  name          = var.name
+  image_id      = data.aws_ami.latest_amazonlinux2.id
   instance_type = "t2.micro"
   iam_instance_profile {
     name = aws_iam_instance_profile.ssm_instance_profile.name
   }
-  user_data = base64encode(data.template_file.user_data.rendered)
+  user_data              = base64encode(data.template_file.user_data.rendered)
   vpc_security_group_ids = [aws_security_group.techchallenge_node_access.id]
 }
 
@@ -76,10 +76,10 @@ resource "aws_security_group" "techchallenge_node_access" {
   vpc_id      = module.network.vpc.id
 
   ingress {
-    description = "ELB traffic access"
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
+    description     = "ELB traffic access"
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "tcp"
     security_groups = [aws_security_group.elb_access.id]
   }
 
