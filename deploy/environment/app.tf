@@ -71,6 +71,13 @@ data "template_file" "user_data" {
   template = file("${path.module}/user_data.sh")
   vars = {
     app_version = var.app_version
+    db_username = var.db_username
+    db_password = var.db_password
+    db_name     = "app"
+    db_host     = module.database.address
+    db_port     = module.database.port
+    listen_host = "0.0.0.0"
+    listen_port = "3000"
   }
 }
 

@@ -13,3 +13,17 @@ variable "app_version" {
   default = "v.0.7.0"
 }
 
+variable "db_name" {
+  type = string
+  default = "app"
+}
+
+variable "db_username" {
+  type = string
+  default = "postgres"
+}
+
+variable "db_password" {
+  type = string
+  default = "changeme"
+}
