@@ -17,6 +17,10 @@ terraform init
 terraform apply
 ```
 
+The public endpoint for the techchallenge will be printed out at the end of the deployment.
+
+:warning: The endpoint might not be immediately available as it takes time for the ELB to register active instances
+
 Once the application as been started you will need to initialise the database for the first time. 
 To do this you need to access one of the EC2 instances running the techchallenge application via SSM in the AWS console.
 
