@@ -25,3 +25,5 @@ TechChallengeApp
 
 # Terraform local state
 .terraform/
+*.tfstate
+*.tfstate.backup

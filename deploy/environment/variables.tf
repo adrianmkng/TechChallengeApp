@@ -1,0 +1,15 @@
+variable "name" {
+  type = string
+  default = "techchallenge"
+}
+
+variable "vpc_cidr" {
+  type = string
+  default = "192.168.0.0/24"
+}
+
+variable "app_version" {
+  type = string
+  default = "v.0.7.0"
+}
+
