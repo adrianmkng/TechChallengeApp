@@ -1,4 +1,4 @@
-# Deployment instructions for TechChallenge app
+# Deployment instructions
 
 This folder contains the code for deploying the techchallenge app to AWS.
 
@@ -17,8 +17,13 @@ terraform init
 terraform apply
 ```
 
-:warning: Defaults have been configured for above usage.
+Once the application as been started you will need to initialise the database for the first time. 
+To do this you need to access one of the EC2 instances running the techchallenge application via SSM in the AWS console.
 
+Once you are in the session on the EC2 instance you can run the following command:
+```
+/app/dist/TechChallengeApp updatedb -s
+```
 
 ## Deployment configuration
 
@@ -35,4 +40,13 @@ Example usage:
 ```
 terraform apply -var="name=test" -var="vpc_cidr=172.17.0.0/16" -var="app_version=v.0.7.0"
 ```
+
+## Architecture
+
+The network has been setup with a public and private tiers.
+
+The public tier is for the Load Balancer.
+
+The private tier is the EC2 instances that run the techchallenge as well at the postgres RDS.
+
 
